@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 // import { hotelApi } from "../api";
-import { hotelApi } from "./api";
+import hotelApi from "./api";
 
 export default function HotelChatPage({ conversation, onBack }) {
   const uid = localStorage.getItem("uid");
@@ -29,15 +29,28 @@ export default function HotelChatPage({ conversation, onBack }) {
       <button onClick={onBack}>Back</button>
       <h3>Chat</h3>
 
-      <div style={{ border: "1px solid #ddd", minHeight: 220, padding: 10, borderRadius: 8, marginBottom: 8 }}>
+      <div
+        style={{
+          border: "1px solid #ddd",
+          minHeight: 220,
+          padding: 10,
+          borderRadius: 8,
+          marginBottom: 8,
+        }}
+      >
         {messages.map((m, i) => (
           <div key={m.id || i} style={{ marginBottom: 6 }}>
-            <b>{m.sender_id === uid ? "You" : "Other"}:</b> {m.text || m.message || ""}
+            <b>{m.sender_id === uid ? "You" : "Other"}:</b>{" "}
+            {m.text || m.message || ""}
           </div>
         ))}
       </div>
 
-      <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Type message..." />
+      <input
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Type message..."
+      />
       <button onClick={send}>Send</button>
     </div>
   );

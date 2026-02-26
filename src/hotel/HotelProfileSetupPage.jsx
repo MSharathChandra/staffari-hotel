@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { hotelApi } from "./api";
+import hotelApi from "./api";
 
-export default function HotelProfileSetupPage({ initialProfileData = {}, onDone }) {
+export default function HotelProfileSetupPage({
+  initialProfileData = {},
+  onDone,
+}) {
   const uid = localStorage.getItem("uid");
   const [parents, setParents] = useState([]);
   const [f, setF] = useState({
@@ -46,16 +49,52 @@ export default function HotelProfileSetupPage({ initialProfileData = {}, onDone 
   return (
     <div>
       <h3>Hotel Profile Setup</h3>
-      <input placeholder="Hotel Name" value={f.hotel_name} onChange={(e) => setF({ ...f, hotel_name: e.target.value })} />
-      <input placeholder="Star Rating" value={f.star_rating} onChange={(e) => setF({ ...f, star_rating: e.target.value })} />
-      <input placeholder="Hotel Type" value={f.hotel_type} onChange={(e) => setF({ ...f, hotel_type: e.target.value })} />
-      <input placeholder="Address" value={f.address_line_1} onChange={(e) => setF({ ...f, address_line_1: e.target.value })} />
-      <input placeholder="City" value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })} />
-      <input placeholder="State" value={f.state} onChange={(e) => setF({ ...f, state: e.target.value })} />
-      <input placeholder="HR Contact Name" value={f.hr_contact_name} onChange={(e) => setF({ ...f, hr_contact_name: e.target.value })} />
-      <input placeholder="HR Contact Email" value={f.hr_contact_email} onChange={(e) => setF({ ...f, hr_contact_email: e.target.value })} />
+      <input
+        placeholder="Hotel Name"
+        value={f.hotel_name}
+        onChange={(e) => setF({ ...f, hotel_name: e.target.value })}
+      />
+      <input
+        placeholder="Star Rating"
+        value={f.star_rating}
+        onChange={(e) => setF({ ...f, star_rating: e.target.value })}
+      />
+      <input
+        placeholder="Hotel Type"
+        value={f.hotel_type}
+        onChange={(e) => setF({ ...f, hotel_type: e.target.value })}
+      />
+      <input
+        placeholder="Address"
+        value={f.address_line_1}
+        onChange={(e) => setF({ ...f, address_line_1: e.target.value })}
+      />
+      <input
+        placeholder="City"
+        value={f.city}
+        onChange={(e) => setF({ ...f, city: e.target.value })}
+      />
+      <input
+        placeholder="State"
+        value={f.state}
+        onChange={(e) => setF({ ...f, state: e.target.value })}
+      />
+      <input
+        placeholder="HR Contact Name"
+        value={f.hr_contact_name}
+        onChange={(e) => setF({ ...f, hr_contact_name: e.target.value })}
+      />
+      <input
+        placeholder="HR Contact Email"
+        value={f.hr_contact_email}
+        onChange={(e) => setF({ ...f, hr_contact_email: e.target.value })}
+      />
       <label>
-        <input type="checkbox" checked={!!f.is_parent} onChange={(e) => setF({ ...f, is_parent: e.target.checked })} />
+        <input
+          type="checkbox"
+          checked={!!f.is_parent}
+          onChange={(e) => setF({ ...f, is_parent: e.target.checked })}
+        />
         Is Parent Hotel
       </label>
 
@@ -63,7 +102,9 @@ export default function HotelProfileSetupPage({ initialProfileData = {}, onDone 
         <select
           value={f.parent_hotel_id}
           onChange={(e) => {
-            const p = parents.find((x) => String(x.hotel_id) === e.target.value);
+            const p = parents.find(
+              (x) => String(x.hotel_id) === e.target.value,
+            );
             setF({
               ...f,
               parent_hotel_id: e.target.value,
@@ -73,7 +114,11 @@ export default function HotelProfileSetupPage({ initialProfileData = {}, onDone 
           }}
         >
           <option value="">Select Parent Hotel</option>
-          {parents.map((p) => <option key={p.hotel_id} value={String(p.hotel_id)}>{p.hotel_name}</option>)}
+          {parents.map((p) => (
+            <option key={p.hotel_id} value={String(p.hotel_id)}>
+              {p.hotel_name}
+            </option>
+          ))}
         </select>
       )}
 

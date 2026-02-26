@@ -1,59 +1,107 @@
-// src/hotel/api.js
-const API_BASE = "https://hhs-backend.onrender.com";
-const CHAT_BASE = "https://hhs-chat.onrender.com";
+const APIBASE = "https://hhs-backend.onrender.com";
+const CHATBASE = "https://hhs-chat.onrender.com"; // kept for other pages
 
 async function request(url, options = {}) {
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json", ...(options.headers || {}) },
     ...options,
   });
+
   const text = await res.text();
-  let data = {};
+  let data;
   try {
-    data = text ? JSON.parse(text) : {};
+    data = text ? JSON.parse(text) : null;
   } catch {
     data = { raw: text };
   }
-  if (!res.ok) throw new Error(data?.message || `Request failed (${res.status})`);
+
+  if (!res.ok) {
+    const msg = data?.message || data?.error || `Request failed: ${res.status}`;
+    throw new Error(msg);
+  }
+
   return data;
 }
 
-export const hotelApi = {
-  getJobs: (uid) => request(`${API_BASE}/getjobs?user_id=${uid}`),
+const hotelApi = {
+  // Flutter uses: /getjobs?userid=<uid> [file:75]
+  getJobs(uid) {
+    return request(`${APIBASE}/getjobs?user_id=${encodeURIComponent(uid)}`);
+  },
 
-  getActiveJobsSummary: ({ hotelId, page = 1, limit = 20, includeExpired = true, department, location }) => {
+  createJob(payload) {
+    return request(`${APIBASE}/createjob`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  editJob(jobId, payload) {
+    return request(`${APIBASE}/editjob/${encodeURIComponent(jobId)}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  // Flutter uses POST /hotel/match-jobseekers-to-job with:
+  // { hotel_owner_id, job_id } [your snippet]
+  matchProfiles({ hotelOwnerId, jobId }) {
+    return request(`${APIBASE}/hotel/match-jobseekers-to-job`, {
+      method: "POST",
+      body: JSON.stringify({
+        hotel_owner_id: hotelOwnerId,
+        job_id: jobId,
+      }),
+    });
+  },
+
+  // NOTE: confirm your backend route.
+  // If you paste your Flutter applicant profile API call, I will set it exactly.
+  getJobSeekerProfile(applicantId) {
+    return request(
+      `${APIBASE}/jobseeker/profile?user_id=${encodeURIComponent(applicantId)}`,
+    );
+  },
+
+  // kept (Applications page)
+  async getActiveJobsSummary({
+    hotelId,
+    page = 1,
+    limit = 20,
+    includeExpired = true,
+    department,
+    location,
+  }) {
+    if (!hotelId) throw new Error("hotelId is required");
+
     const qp = new URLSearchParams({
       hotel_id: hotelId,
+      hotelid: hotelId, // backward compat
       page: String(page),
       limit: String(limit),
       include_expired: String(includeExpired),
+      includeexpired: String(includeExpired),
     });
-    if (department) qp.set("department", department);
-    if (location) qp.set("location", location);
-    return request(`${API_BASE}/hotel/active-jobs-summary?${qp.toString()}`);
+
+    if (department) qp.set("department", String(department));
+    if (location) qp.set("location", String(location));
+
+    const json = await request(
+      `${APIBASE}/hotel/active-jobs-summary?${qp.toString()}`,
+    );
+
+    const jobs = Array.isArray(json?.jobs) ? json.jobs : [];
+    return {
+      items: jobs.map((j) => ({
+        jobData: j,
+        applicantCount: Number(j?.applicantscount ?? 0) || 0,
+      })),
+      hasMore: json?.hasmore ?? true,
+      totalApplicants: Number(json?.totalapplicants ?? 0) || 0,
+      totalAccepted: Number(json?.totalaccepted ?? 0) || 0,
+      totalPendingOrRejected: Number(json?.totalpendingorrejected ?? 0) || 0,
+    };
   },
-
-  getApplicants: ({ hotelOwnerId, jobId }) =>
-    request(`${API_BASE}/hotel/job-applicants?hotel_owner_id=${hotelOwnerId}&job_id=${jobId}`),
-
-  updateApplicantStatus: (payload) =>
-    request(`${API_BASE}/hotel/job-applicants/application-status`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
-
-  createJob: (payload) =>
-    request(`${API_BASE}/createjob`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    }),
-
-  createConversation: ({ hotelOwnerId, jobSeekerId }) =>
-    request(`${CHAT_BASE}/conversations?user_id=${hotelOwnerId}`, {
-      method: "POST",
-      body: JSON.stringify({
-        participants: [hotelOwnerId, jobSeekerId],
-        topic: "Hotel Job Opening",
-      }),
-    }),
 };
+
+export default hotelApi;

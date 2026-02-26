@@ -1,4 +1,6 @@
-export const JOB_POST_MODE = {
+const JOBPOSTMODE = {
   QUICK: "quick",
   FULL: "full",
 };
+
+export default JOBPOSTMODE;
