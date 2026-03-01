@@ -1,4 +1,4 @@
-const APIBASE = "https://hhs-backend.onrender.com";
+const APIBASE = "https://hhs-backend-1fmx.onrender.com";
 const CHATBASE = "https://hhs-chat.onrender.com"; // kept for other pages
 
 async function request(url, options = {}) {

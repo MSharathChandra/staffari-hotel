@@ -92,7 +92,7 @@ function shouldShowChatButton(status) {
 }
 
 async function fetchApplicants({ hotelOwnerId, jobId }) {
-  const url = `https://hhs-backend.onrender.com/hotel/job-applicants?hotel_owner_id=${encodeURIComponent(
+  const url = `https://hhs-backend-1fmx.onrender.com/hotel/job-applicants?hotel_owner_id=${encodeURIComponent(
     hotelOwnerId,
   )}&job_id=${encodeURIComponent(jobId)}`;
 
@@ -107,7 +107,7 @@ async function fetchApplicants({ hotelOwnerId, jobId }) {
 
 async function updateApplicantStatus({ hotelOwnerId, jobId, userId, status }) {
   const url =
-    "https://hhs-backend.onrender.com/hotel/job-applicants/application-status";
+    "https://hhs-backend-1fmx.onrender.com/hotel/job-applicants/application-status";
   const payload = {
     hotelownerid: hotelOwnerId,
     jobid: jobId,
@@ -129,7 +129,7 @@ async function updateApplicantStatus({ hotelOwnerId, jobId, userId, status }) {
 
 async function bulkUpdateStatus({ hotelOwnerId, jobId, updates }) {
   const url =
-    "https://hhs-backend.onrender.com/hotel/job-applicants/application-status";
+    "https://hhs-backend-1fmx.onrender.com/hotel/job-applicants/application-status";
   const payload = { hotelownerid: hotelOwnerId, jobid: jobId, updates };
 
   const res = await fetch(url, {

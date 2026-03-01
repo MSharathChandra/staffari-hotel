@@ -197,7 +197,7 @@ async function fetchSummaryPage({
   if (department && department.trim()) qp.set("department", department.trim());
   if (location && location.trim()) qp.set("location", location.trim());
 
-  const url = `https://hhs-backend.onrender.com/hotel/active-jobs-summary?${qp.toString()}`;
+  const url = `https://hhs-backend-1fmx.onrender.com/hotel/active-jobs-summary?${qp.toString()}`;
   const res = await fetch(url);
 
   if (!res.ok) {

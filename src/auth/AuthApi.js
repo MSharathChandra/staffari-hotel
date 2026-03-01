@@ -1,5 +1,5 @@
 // src/auth/AuthApi.js
-const API_BASE = "https://hhs-backend.onrender.com";
+const API_BASE = "https://hhs-backend-1fmx.onrender.com";
 
 async function req(url, options = {}) {
   const res = await fetch(url, {
@@ -13,7 +13,8 @@ async function req(url, options = {}) {
   } catch {
     data = { raw };
   }
-  if (!res.ok) throw new Error(data?.message || `Request failed (${res.status})`);
+  if (!res.ok)
+    throw new Error(data?.message || `Request failed (${res.status})`);
   return data;
 }
 
